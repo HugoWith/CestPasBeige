@@ -1,8 +1,13 @@
 <template>
   <div class="hello">
     <h1>balalala</h1>
-    <p v-for="(record, index) in records" :key="index">{{ record.Citation }}</p>
-    <p v-for="(record, index) in records" :key="index">{{ record.Auteur }}</p>
+    <div v-for="(record, index) in fullArray" :key="index">
+      <p>
+        {{ record.Citations }} -
+        {{ record.Auteur }}
+      </p>
+      <p></p>
+    </div>
   </div>
 </template>
 
@@ -16,17 +21,19 @@ export default {
       fullArray: [],
     };
   },
-  mounted() {
+  beforeMount() {
     this.getData();
-    console.log(this.fullArray);
+  },
+  mounted() {
+    this.getRandomQuotes();
   },
   methods: {
     getData: function() {
-      var Airtable = require("airtable");
-      var base = new Airtable({ apiKey: "keyYyXwDnUOjERzzD" }).base(
+      let Airtable = require("airtable");
+      let base = new Airtable({ apiKey: "keyYyXwDnUOjERzzD" }).base(
         "appy9OSW6WdE6Dlm0"
       );
-
+      let a = [];
       base("Imported table")
         .select({
           view: "Grid view",
@@ -39,7 +46,8 @@ export default {
               // console.log(record.fields);
 
               let fullQuotes = record.fields;
-              console.log(fullQuotes);
+              // console.log(fullQuotes);
+              a.push(fullQuotes);
 
               // console.log("Retrieved", record.get("Citations"));
               // console.log("Retrieved", record.get("Auteur"));
@@ -57,40 +65,18 @@ export default {
             }
           }
         );
-      //   let appId = "appy9OSW6WdE6Dlm0";
-      //   let appName = "beige";
-      //   let appKey = "keyspU26TtuKilc1K";
-      //   // let url = "https://api.airtable.com/v0/" + appId + "/" + appName;
-      //   // let axiosConfig = {
-      //   //   headers: {
-      //   //     Authorization: "Bearer " + appKey,
-      //   //     "Content-Type": "application/json",
-      //   //   },
-      //   // };
-      //   axios
-      //     .get("https://api.airtable.com/v0/" + appId + "/" + appName, {
-      //       headers: { Authorization: "Bearer " + appKey },
-      //     })
-      //     .then((resp) => {
-      //       console.log(resp);
-      //     })
-      //     .catch((error) => console.log(error));
+
+      this.fullArray = a;
+    },
+    getRandomQuotes: function() {
+      console.log(this.fullArray.length);
+      let randomQuote = this.fullArray[
+        Math.floor(Math.random() * this.fullArray.length)
+      ];
+      console.log(randomQuote);
     },
   },
 };
-//   axios
-//     .get(
-//       `https://api.airtable.com/v0/${this.airTableApp}/${this.airTableName}`,
-//       {
-//         headers: { Authorization: "Bearer " + this.apiToken },
-//       }
-//     )
-//     .then((res) => {
-//       console.log(res);
-//       this.records = res.data.records;
-//       console.log(this.records);
-//     });
-// },
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
