@@ -2,6 +2,7 @@
   <div class="hello">
     <h1>balalala</h1>
     <div v-for="(record, index) in fullArray" :key="index">
+      <!-- <p>{{fullArray[Math.floor(Math.random() * fullArray.length)].Citations}}</p> -->
       <p>
         {{ record.Citations }} -
         {{ record.Auteur }}
@@ -12,70 +13,47 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "HelloWorld",
   data() {
     return {
       fullArray: [],
+      randomArray: []
     };
   },
-  beforeMount() {
+  created() {
     this.getData();
   },
   mounted() {
     this.getRandomQuotes();
+    console.log(this.fullArray.length);
+    console.log(this.randomArray);
   },
+
   methods: {
     getData: function() {
-      let Airtable = require("airtable");
-      let base = new Airtable({ apiKey: "keyYyXwDnUOjERzzD" }).base(
-        "appy9OSW6WdE6Dlm0"
-      );
-      let a = [];
-      base("Imported table")
-        .select({
-          view: "Grid view",
+      const view = "imported table";
+      const app_id = "appy9OSW6WdE6Dlm0";
+      const app_key = "Bearer keyYyXwDnUOjERzzD";
+      const url = "https://api.airtable.com/v0/" + app_id + "/" + view;
+      axios
+        .get(url, {
+          headers: { Authorization: app_key }
         })
-        .eachPage(
-          function page(records) {
-            // This function (`page`) will get called for each page of records.
-
-            records.forEach(function(record) {
-              // console.log(record.fields);
-
-              let fullQuotes = record.fields;
-              // console.log(fullQuotes);
-              a.push(fullQuotes);
-
-              // console.log("Retrieved", record.get("Citations"));
-              // console.log("Retrieved", record.get("Auteur"));
-            });
-
-            // To fetch the next page of records, call `fetchNextPage`.
-            // If there are more records, `page` will get called again.
-            // If there are no more records, `done` will get called.
-            // fetchNextPage();
-          },
-          function done(err) {
-            if (err) {
-              console.error(err);
-              return;
-            }
-          }
-        );
-
-      this.fullArray = a;
+        .then(response => {
+          console.log(response.data.records);
+          this.fullArray.push(response.data.records);
+        })
+        .catch(error => console.log(error));
     },
     getRandomQuotes: function() {
-      console.log(this.fullArray.length);
-      let randomQuote = this.fullArray[
+      this.randomArray = this.fullArray[
         Math.floor(Math.random() * this.fullArray.length)
       ];
-      console.log(randomQuote);
-    },
-  },
+    }
+  }
 };
 </script>
 
