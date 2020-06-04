@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       fullArray: [],
-      randomArray: []
+      randomArray: [],
     };
   },
   created() {},
@@ -37,15 +37,15 @@ export default {
       const url = "https://api.airtable.com/v0/" + app_id + "/" + view;
       axios
         .get(url, {
-          headers: { Authorization: app_key }
+          headers: { Authorization: app_key },
         })
-        .then(response => {
+        .then((response) => {
           // console.log(response.data.records);
           let rep = [];
           let minimiseAnswer = [];
           rep.push(response.data.records);
-          rep.forEach(record => {
-            record.forEach(e => {
+          rep.forEach((record) => {
+            record.forEach((e) => {
               // console.log(e.fields);
               minimiseAnswer.push(e.fields);
             });
@@ -55,7 +55,7 @@ export default {
             this.getRandomQuotes();
           });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     },
     getRandomQuotes: function() {
       let randomQuotes = this.fullArray[
@@ -63,8 +63,8 @@ export default {
       ];
       this.randomArray = randomQuotes;
       console.log(this.randomArray);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -98,7 +98,7 @@ h2 {
 .citation {
   font-family: "Lora", sans-serif;
   color: #25283d;
-  font-size: 45px;
+  font-size: 35px;
   text-align: center;
 }
 .auteur {
@@ -132,7 +132,7 @@ h2 {
 .btn {
   width: 200px;
   border-radius: 30px;
-  padding: 15px;
+  padding: 10px;
   cursor: pointer;
   margin: 0 auto;
   background-color: transparent;
