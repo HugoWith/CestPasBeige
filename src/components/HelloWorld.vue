@@ -1,10 +1,10 @@
 <template>
   <div class="hello container">
-    <h1>"C'est pas beige,</h1>
-    <h2>C'est Blanc nature"</h2>
+    <h1 :class="{ bg : titleclicked }">"C'est pas beige,</h1>
+    <h2 :class="{ bg : titleclicked }">C'est Blanc nature"</h2>
     <div class="container--main">
       <!-- <p>{{fullArray[Math.floor(Math.random() * fullArray.length)].Citations}}</p> -->
-      <p class="citation">{{ randomArray.Citations }}</p>
+      <p class="citation" :class="{ bg : titleclicked }">{{ randomArray.Citations }}</p>
       <p class="auteur">{{ randomArray.Auteur }}</p>
     </div>
     <div class="container--btn">
@@ -22,6 +22,7 @@ export default {
     return {
       fullArray: [],
       randomArray: [],
+      titleclicked: true
     };
   },
   created() {},
@@ -35,36 +36,37 @@ export default {
       const app_id = "appy9OSW6WdE6Dlm0";
       const app_key = "Bearer keyYyXwDnUOjERzzD";
       const url = "https://api.airtable.com/v0/" + app_id + "/" + view;
+
       axios
         .get(url, {
-          headers: { Authorization: app_key },
+          headers: { Authorization: app_key }
         })
-        .then((response) => {
+        .then(response => {
           // console.log(response.data.records);
           let rep = [];
           let minimiseAnswer = [];
           rep.push(response.data.records);
-          rep.forEach((record) => {
-            record.forEach((e) => {
+          this.offset = response.data.offset;
+          rep.forEach(record => {
+            record.forEach(e => {
               // console.log(e.fields);
               minimiseAnswer.push(e.fields);
             });
             // console.log(minimiseAnswer);
             this.fullArray = minimiseAnswer;
-            console.log(this.fullArray);
             this.getRandomQuotes();
           });
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
     getRandomQuotes: function() {
       let randomQuotes = this.fullArray[
         Math.floor(Math.random() * this.fullArray.length)
       ];
       this.randomArray = randomQuotes;
-      console.log(this.randomArray);
-    },
-  },
+      this.titleclicked = !this.titleclicked;
+    }
+  }
 };
 </script>
 
@@ -74,6 +76,18 @@ export default {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+}
+
+.bg {
+  background: rgb(0, 0, 0) !important;
+  background: linear-gradient(
+    131deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(37, 40, 61, 1) 53%
+  ) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
 }
 
 h1,
@@ -87,6 +101,11 @@ h2 {
 
 h1 {
   font-size: 80px;
+  overflow: hidden;
+}
+
+.blue {
+  color: #bdd4e7;
 }
 
 h2 {
@@ -115,19 +134,25 @@ h2 {
   margin: 0 auto;
   height: 100vh;
   padding: 20px;
+  overflow: hidden;
 }
 
 .container--main {
   // transform: translate(20%, 20%);
   width: 80%;
   margin: 10% auto 5% auto;
+  overflow: hidden;
 }
 
 .container--btn {
-  width: 100%;
+  position: absolute;
+  width: 90%;
   text-align: center;
-  // transform: translateY(-100px);
+  margin: 0 auto;
+  bottom: 20%;
+  overflow: hidden;
 }
+// transform: translateY(-100px);
 
 .btn {
   width: 200px;
@@ -200,7 +225,7 @@ a {
     font-size: 1.8em;
   }
   .citation {
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
   .auteur {
     font-size: 0.5em;
@@ -210,6 +235,9 @@ a {
   }
   .container--main {
     margin: 20% auto;
+  }
+  .container--btn {
+    bottom: 5%;
   }
 }
 </style>
